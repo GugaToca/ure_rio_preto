@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>URE SJR Preto • Escolas x CIE</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="loginContainer">
+  <form id="loginForm" class="card loginCard">
+    <h2>Acesso Restrito</h2>
+    <input id="loginEmail" type="email" placeholder="Email" required />
+    <input id="loginPassword" type="password" placeholder="Senha" required />
+    <button class="btn primary">Entrar</button>
+    <div id="loginError" class="msg err"></div>
+  </form>
+</div>
+
+<!-- APP SCREEN -->
+<div id="appScreen" style="display:none;">
+
+  <header class="topbar">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <h1>
+      <img src="masct_ure.png" style="height:60px; vertical-align:middle;">
+      URE São José do Rio Preto
+      </h1>
+
+      <div style="display:flex;gap:10px;">
+        <button id="toggleDark" class="btn">🌙</button>
+        <button id="logoutBtn" class="btn">Sair</button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="wrap grid">
+
+    <!-- Cadastro -->
+    <section class="card">
+      <h2>Cadastrar / Atualizar</h2>
+
+      <form id="schoolForm" class="form">
+
+        <div class="row">
+          <label>
+            CIE (somente números)
+            <input id="cie" inputmode="numeric" placeholder="Ex: 123456" required />
+          </label>
+
+          <label>
+            Nome da escola
+            <input id="nome" placeholder="Ex: EE Prof. João da Silva" required />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>
+            URE
+            <input id="ure" value="São José do Rio Preto" />
+          </label>
+
+          <label>
+            Município (opcional)
+            <input id="municipio" placeholder="Ex: São José do Rio Preto" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Salvar</button>
+          <button type="button" id="btnClear" class="btn">Limpar</button>
+        </div>
+
+        <div id="formMsg" class="msg"></div>
+
+      </form>
+    </section>
+
+    <!-- Busca -->
+    <section class="card">
+      <h2>Busca</h2>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="cie">Buscar por CIE</button>
+        <button class="tab" data-tab="nome">Buscar por Nome</button>
+      </div>
+
+      <div id="tab-cie" class="tabpanel active">
+        <label>
+          Digite o CIE
+          <input id="searchCie" inputmode="numeric" placeholder="Ex: 123456" />
+        </label>
+
+        <button id="btnSearchCie" class="btn primary">Buscar</button>
+      </div>
+
+      <div id="tab-nome" class="tabpanel">
+        <label>
+          Digite parte do nome ou município (mín. 2 letras)
+          <input id="searchNome" placeholder="Ex: Maria, Cedral, Uchoa..." />
+        </label>
+
+        <button id="btnSearchNome" class="btn primary">Buscar</button>
+      </div>
+
+      <div id="result" class="result"></div>
+
+    </section>
+
+    <!-- Lista -->
+    <section class="card full">
+
+      <div class="listHeader">
+        <h2>Lista (ordem alfabética)</h2>
+        <p id="schoolCount"></p>
+
+        <div class="listActions">
+          <button id="btnReload" class="btn">Recarregar</button>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Escola</th>
+              <th>CIE</th>
+              <th>Município</th>
+              <th>URE</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="tbody"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+    <!-- Importação -->
+    <section class="card full">
+
+      <h2>Importar em massa</h2>
+
+      <p class="hint">
+        Cole no formato: <b>NOME DA ESCOLA</b> ; <b>CIE</b> ; <b>MUNICÍPIO</b>. Uma por linha.
+      </p>
+
+      <textarea id="bulk" rows="6"></textarea>
+
+      <div class="actions">
+        <button id="btnBulk" class="btn primary">Importar</button>
+        <div id="bulkMsg" class="msg"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <small>Feito em HTML/CSS/JS + Firebase • CIE como ID no Firestore</small>
+    </div>
+  </footer>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
