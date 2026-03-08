@@ -391,3 +391,104 @@ border-radius:10px;
 .btnDeleteHist:hover{
   opacity:0.8;
 }
+
+/* ================= MOBILE ULTRA AJUSTE ================= */
+
+@media (max-width: 768px) {
+
+  .wrap {
+    padding: 12px;
+  }
+
+  .topbar h1 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .headerFlex {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .logoTitle {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  .headerBtns {
+    display: flex;
+    gap: 10px;
+  }
+
+  .mainTabs {
+    flex-direction: column;
+  }
+
+  .mainTab {
+    width: 100%;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .listHeader {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .tableWrap {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  .modalContent {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  textarea {
+    font-size: 16px; /* evita zoom automático no iPhone */
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+}
+
+/* MOBILE PEQUENO (tipo Galaxy antigo / iPhone SE) */
+
+@media (max-width: 480px) {
+
+  .logoMascot {
+    height: 70px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+}
