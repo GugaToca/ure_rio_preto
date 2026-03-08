@@ -518,3 +518,40 @@ border-radius:10px;
   }
 
 }
+
+/* ================= HEADER MOBILE PROFISSIONAL ================= */
+
+@media (max-width: 768px){
+
+  .topbar{
+    padding: 8px 0;
+  }
+
+  .headerFlex{
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .logoTitle{
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .logoTitle span{
+    font-size: 13px;
+    line-height: 1.2;
+    max-width: 250px;
+  }
+
+  .logoMascot{
+    height: 60px;
+  }
+
+  .headerBtns{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+}
