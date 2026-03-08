@@ -392,102 +392,128 @@ border-radius:10px;
   opacity:0.8;
 }
 
-/* ================= MOBILE ULTRA AJUSTE ================= */
+/* ================= RESPONSIVO REAL ================= */
 
-@media (max-width: 768px) {
+@media (max-width: 900px){
 
-  .wrap {
-    padding: 12px;
+  .grid{
+    grid-template-columns: 1fr;
   }
 
-  .topbar h1 {
-    font-size: 16px;
-    text-align: center;
-  }
-
-  .headerFlex {
+  .form .row{
     flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .logoTitle {
-    flex-direction: column;
-    gap: 8px;
-    font-size: 16px;
-  }
-
-  .headerBtns {
-    display: flex;
-    gap: 10px;
-  }
-
-  .mainTabs {
-    flex-direction: column;
-  }
-
-  .mainTab {
-    width: 100%;
-  }
-
-  .tabs {
-    flex-direction: column;
-  }
-
-  .tab {
-    width: 100%;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
-  }
-
-  .listHeader {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .tableWrap {
-    overflow-x: auto;
-  }
-
-  table {
-    min-width: 600px;
-  }
-
-  .modalContent {
-    width: 95%;
-    max-height: 85vh;
-  }
-
-  textarea {
-    font-size: 16px; /* evita zoom automático no iPhone */
-  }
-
-  input {
-    font-size: 16px;
   }
 
 }
 
-/* MOBILE PEQUENO (tipo Galaxy antigo / iPhone SE) */
+/* MOBILE */
 
-@media (max-width: 480px) {
+@media (max-width: 768px){
 
-  .logoMascot {
+  body{
+    font-size: 15px;
+  }
+
+  .wrap{
+    padding: 12px;
+  }
+
+  /* HEADER */
+  .headerFlex{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .logoTitle{
+    flex-direction: column;
+    gap: 6px;
+    font-size: 15px;
+  }
+
+  .logoMascot{
     height: 70px;
   }
 
-  .card {
+  .headerBtns{
+    display: flex;
+    gap: 10px;
+  }
+
+  /* MENU PRINCIPAL */
+  .mainTabs{
+    flex-direction: column;
+  }
+
+  .mainTab{
+    width: 100%;
+  }
+
+  /* TABS DE BUSCA */
+  .tabs{
+    flex-direction: column;
+  }
+
+  .tab{
+    width: 100%;
+  }
+
+  /* BOTÕES */
+  .actions{
+    flex-direction: column;
+  }
+
+  .btn{
+    width: 100%;
+    padding: 12px;
+  }
+
+  /* LISTA */
+  .listHeader{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* TABELA vira scroll horizontal bonito */
+  .tableWrap{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table{
+    min-width: 650px;
+  }
+
+  /* CARDS HISTÓRICO */
+  .cardsGrid{
+    grid-template-columns: 1fr;
+  }
+
+  /* MODAL */
+  .modalContent{
+    width: 95%;
+    max-height: 85vh;
     padding: 15px;
   }
 
-  h2 {
+  textarea,
+  input{
+    font-size: 16px; /* evita zoom no iPhone */
+  }
+
+}
+
+/* MOBILE PEQUENO */
+
+@media (max-width: 480px){
+
+  .card{
+    padding: 15px;
+  }
+
+  h2{
     font-size: 18px;
   }
 
