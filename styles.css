@@ -555,3 +555,48 @@ border-radius:10px;
   }
 
 }
+
+/* ================= HEADER MOBILE DEFINITIVO ================= */
+
+@media (max-width: 768px){
+
+  .topbar{
+    padding: 15px 0;
+  }
+
+  .headerFlex{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .logoTitle{
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .logoTitle span{
+    font-size: 15px;
+    font-weight: 600;
+    max-width: 280px;
+  }
+
+  .logoMascot{
+    height: 65px;
+  }
+
+  .headerBtns{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .headerBtns .btn{
+    width: auto;
+    padding: 8px 14px;
+  }
+
+}
