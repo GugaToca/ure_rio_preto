@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>URE SJR Preto • Escolas x CIE</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>URE SJR Preto • Escolas x CIE</title>
+
+<link rel="stylesheet" href="styles.css"/>
+
 </head>
 <body>
 
@@ -12,167 +14,220 @@
 <div id="loginScreen" class="loginContainer">
   <form id="loginForm" class="card loginCard">
     <h2>Acesso Restrito</h2>
-    <input id="loginEmail" type="email" placeholder="Email" required />
-    <input id="loginPassword" type="password" placeholder="Senha" required />
+    <input id="loginEmail" type="email" placeholder="Email" required>
+    <input id="loginPassword" type="password" placeholder="Senha" required>
     <button class="btn primary">Entrar</button>
     <div id="loginError" class="msg err"></div>
   </form>
 </div>
 
-<!-- APP SCREEN -->
+<!-- APP -->
 <div id="appScreen" style="display:none;">
 
-  <header class="topbar">
-    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
-      <h1>
-      <img src="masct_ure.png" style="height:60px; vertical-align:middle;">
-      URE São José do Rio Preto
-      </h1>
+<header class="topbar">
 
-      <div style="display:flex;gap:10px;">
-        <button id="toggleDark" class="btn">🌙</button>
-        <button id="logoutBtn" class="btn">Sair</button>
-      </div>
+<div class="wrap headerFlex">
 
-    </div>
-  </header>
+<h1 class="logoTitle">
+<img src="masct_ure.png" class="logoMascot">
+<span>CONSULTE AQUI O CIE OU O NOME DAS ESCOLAS</span>
+</h1>
 
-  <main class="wrap grid">
+<div class="headerBtns">
+<button id="toggleDark" class="btn">🌙</button>
+<button id="logoutBtn" class="btn">Sair</button>
+</div>
 
-    <!-- Cadastro -->
-    <section class="card">
-      <h2>Cadastrar / Atualizar</h2>
+</div>
 
-      <form id="schoolForm" class="form">
+</header>
 
-        <div class="row">
-          <label>
-            CIE (somente números)
-            <input id="cie" inputmode="numeric" placeholder="Ex: 123456" required />
-          </label>
+<!-- MENU PRINCIPAL -->
 
-          <label>
-            Nome da escola
-            <input id="nome" placeholder="Ex: EE Prof. João da Silva" required />
-          </label>
-        </div>
+<div class="wrap mainTabs">
 
-        <div class="row">
-          <label>
-            URE
-            <input id="ure" value="São José do Rio Preto" />
-          </label>
+<button class="mainTab active" data-page="sistema">Sistema</button>
+<button class="mainTab" data-page="historico">Histórico de Atendimento</button>
 
-          <label>
-            Município (opcional)
-            <input id="municipio" placeholder="Ex: São José do Rio Preto" />
-          </label>
-        </div>
+</div>
 
-        <div class="actions">
-          <button type="submit" class="btn primary">Salvar</button>
-          <button type="button" id="btnClear" class="btn">Limpar</button>
-        </div>
+<!-- PÁGINA SISTEMA -->
 
-        <div id="formMsg" class="msg"></div>
+<div id="page-sistema">
 
-      </form>
-    </section>
+<main class="wrap grid">
 
-    <!-- Busca -->
-    <section class="card">
-      <h2>Busca</h2>
+<section class="card">
 
-      <div class="tabs">
-        <button class="tab active" data-tab="cie">Buscar por CIE</button>
-        <button class="tab" data-tab="nome">Buscar por Nome</button>
-      </div>
+<h2>Cadastrar / Atualizar</h2>
 
-      <div id="tab-cie" class="tabpanel active">
-        <label>
-          Digite o CIE
-          <input id="searchCie" inputmode="numeric" placeholder="Ex: 123456" />
-        </label>
+<form id="schoolForm" class="form">
 
-        <button id="btnSearchCie" class="btn primary">Buscar</button>
-      </div>
+<div class="row">
 
-      <div id="tab-nome" class="tabpanel">
-        <label>
-          Digite parte do nome ou município (mín. 2 letras)
-          <input id="searchNome" placeholder="Ex: Maria, Cedral, Uchoa..." />
-        </label>
+<label>
+CIE (somente números)
+<input id="cie" inputmode="numeric" placeholder="Ex: 123456" required>
+</label>
 
-        <button id="btnSearchNome" class="btn primary">Buscar</button>
-      </div>
+<label>
+Nome da escola
+<input id="nome" placeholder="Ex: EE Prof. João da Silva" required>
+</label>
 
-      <div id="result" class="result"></div>
+</div>
 
-    </section>
+<div class="row">
 
-    <!-- Lista -->
-    <section class="card full">
+<label>
+URE
+<input id="ure" value="São José do Rio Preto">
+</label>
 
-      <div class="listHeader">
-        <h2>Lista (ordem alfabética)</h2>
-        <p id="schoolCount"></p>
+<label>
+Município
+<input id="municipio" placeholder="Ex: São José do Rio Preto">
+</label>
 
-        <div class="listActions">
-          <button id="btnReload" class="btn">Recarregar</button>
-        </div>
-      </div>
+</div>
 
-      <div class="tableWrap">
+<div class="actions">
+<button type="submit" class="btn primary">Salvar</button>
+<button type="button" id="btnClear" class="btn">Limpar</button>
+</div>
 
-        <table>
+<div id="formMsg" class="msg"></div>
 
-          <thead>
-            <tr>
-              <th>Escola</th>
-              <th>CIE</th>
-              <th>Município</th>
-              <th>URE</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
+</form>
 
-          <tbody id="tbody"></tbody>
+</section>
 
-        </table>
+<section class="card">
 
-      </div>
+<h2>Busca</h2>
 
-    </section>
+<div class="tabs">
+<button class="tab active" data-tab="cie">Buscar por CIE</button>
+<button class="tab" data-tab="nome">Buscar por Nome</button>
+</div>
 
-    <!-- Importação -->
-    <section class="card full">
+<div id="tab-cie" class="tabpanel active">
 
-      <h2>Importar em massa</h2>
+<label>
+Digite o CIE
+<input id="searchCie" inputmode="numeric">
+</label>
 
-      <p class="hint">
-        Cole no formato: <b>NOME DA ESCOLA</b> ; <b>CIE</b> ; <b>MUNICÍPIO</b>. Uma por linha.
-      </p>
+<button id="btnSearchCie" class="btn primary">Buscar</button>
 
-      <textarea id="bulk" rows="6"></textarea>
+</div>
 
-      <div class="actions">
-        <button id="btnBulk" class="btn primary">Importar</button>
-        <div id="bulkMsg" class="msg"></div>
-      </div>
+<div id="tab-nome" class="tabpanel">
 
-    </section>
+<label>
+Digite parte do nome ou município
+<input id="searchNome">
+</label>
 
-  </main>
+<button id="btnSearchNome" class="btn primary">Buscar</button>
 
-  <footer class="footer">
-    <div class="wrap">
-      <small>Feito em HTML/CSS/JS + Firebase • CIE como ID no Firestore</small>
-    </div>
-  </footer>
+</div>
+
+<div id="result" class="result"></div>
+
+</section>
+
+<section class="card full">
+
+<div class="listHeader">
+
+<h2>Lista</h2>
+<p id="schoolCount"></p>
+
+<button id="btnReload" class="btn">Recarregar</button>
+
+</div>
+
+<div class="tableWrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Escola</th>
+<th>CIE</th>
+<th>Município</th>
+<th>URE</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section class="card full">
+
+<h2>Importar em massa</h2>
+
+<p class="hint">
+NOME DA ESCOLA ; CIE ; MUNICÍPIO
+</p>
+
+<textarea id="bulk" rows="6"></textarea>
+
+<div class="actions">
+<button id="btnBulk" class="btn primary">Importar</button>
+<div id="bulkMsg" class="msg"></div>
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<!-- PÁGINA HISTÓRICO -->
+
+<div id="page-historico" style="display:none">
+
+<div class="wrap">
+
+<h2>Histórico de Atendimento</h2>
+
+<div id="cardsHistorico" class="cardsGrid"></div>
+
+</div>
+
+</div>
+
+<!-- MODAL HISTÓRICO -->
+
+<div id="modalHistorico" class="modal">
+
+<div class="modalContent">
+
+<h3 id="modalSchool"></h3>
+
+<div id="historicoLista"></div>
+
+<textarea id="historicoTexto" placeholder="Descreva o atendimento realizado"></textarea>
+
+<button type="button" id="btnSalvarHistorico" class="btn primary">Salvar anotação</button>
+
+<button id="btnFecharModal" class="btn">Fechar</button>
+
+</div>
 
 </div>
 
 <script type="module" src="app.js"></script>
+
+</div>
 
 </body>
 </html>

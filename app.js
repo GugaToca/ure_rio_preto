@@ -1,6 +1,7 @@
 /* ================= FIREBASE ================= */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+
 import {
   getFirestore,
   doc,
@@ -10,7 +11,8 @@ import {
   collection,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 import {
@@ -37,11 +39,14 @@ const auth = getAuth(app);
 
 const $ = (id) => document.getElementById(id);
 
+/* login */
 const loginScreen = $("loginScreen");
 const appScreen = $("appScreen");
 const loginForm = $("loginForm");
 const logoutBtn = $("logoutBtn");
 const loginError = $("loginError");
+
+/* sistema */
 const schoolCount = $("schoolCount");
 
 const form = $("schoolForm");
@@ -68,6 +73,17 @@ const btnBulk = $("btnBulk");
 const bulkMsg = $("bulkMsg");
 
 const toggleDark = $("toggleDark");
+
+/* histórico (novo) */
+const cardsHistorico = $("cardsHistorico");
+const modalHistorico = $("modalHistorico");
+const modalSchool = $("modalSchool");
+const historicoLista = $("historicoLista");
+const historicoTexto = $("historicoTexto");
+const btnSalvarHistorico = $("btnSalvarHistorico");
+const btnFecharModal = $("btnFecharModal");
+
+let currentCIE = null;
 
 /* ================= HELPERS ================= */
 
@@ -109,19 +125,15 @@ loginForm?.addEventListener("submit", async (e)=>{
 
   e.preventDefault();
 
-  loginError.textContent="";
+  if(loginError) loginError.textContent="";
 
-  const email=$("loginEmail").value;
-  const password=$("loginPassword").value;
+  const email=$("loginEmail")?.value || "";
+  const password=$("loginPassword")?.value || "";
 
   try{
-
     await signInWithEmailAndPassword(auth,email,password);
-
   }catch(err){
-
-    loginError.textContent="Email ou senha inválidos";
-
+    if(loginError) loginError.textContent="Email ou senha inválidos";
   }
 
 });
@@ -136,15 +148,15 @@ onAuthStateChanged(auth,(user)=>{
 
   if(user){
 
-    loginScreen.style.display="none";
-    appScreen.style.display="block";
+    if(loginScreen) loginScreen.style.display="none";
+    if(appScreen) appScreen.style.display="block";
 
     loadList();
 
   }else{
 
-    loginScreen.style.display="flex";
-    appScreen.style.display="none";
+    if(loginScreen) loginScreen.style.display="flex";
+    if(appScreen) appScreen.style.display="none";
 
   }
 
@@ -158,10 +170,10 @@ form?.addEventListener("submit", async (e)=>{
 
   setMsg(formMsg,"","");
 
-  const cie = onlyDigits(cieEl.value);
-  const nome = normalizeName(nomeEl.value);
-  const ure = normalizeName(ureEl.value) || "São José do Rio Preto";
-  const municipio = normalizeName(municipioEl.value);
+  const cie = onlyDigits(cieEl?.value);
+  const nome = normalizeName(nomeEl?.value);
+  const ure = normalizeName(ureEl?.value) || "São José do Rio Preto";
+  const municipio = normalizeName(municipioEl?.value);
 
   if(!cie) return setMsg(formMsg,"CIE inválido","err");
   if(!nome) return setMsg(formMsg,"Nome inválido","err");
@@ -182,9 +194,9 @@ form?.addEventListener("submit", async (e)=>{
 
   setMsg(formMsg,"Salvo com sucesso","ok");
 
-  cieEl.value="";
-  nomeEl.value="";
-  municipioEl.value="";
+  if(cieEl) cieEl.value="";
+  if(nomeEl) nomeEl.value="";
+  if(municipioEl) municipioEl.value="";
 
   loadList();
 
@@ -194,9 +206,9 @@ form?.addEventListener("submit", async (e)=>{
 
 btnClear?.addEventListener("click",()=>{
 
-  cieEl.value="";
-  nomeEl.value="";
-  municipioEl.value="";
+  if(cieEl) cieEl.value="";
+  if(nomeEl) nomeEl.value="";
+  if(municipioEl) municipioEl.value="";
 
 });
 
@@ -204,14 +216,14 @@ btnClear?.addEventListener("click",()=>{
 
 async function loadList(){
 
-  const q=query(collection(db,"escolas"),orderBy("nomeLower"));
-  const snap=await getDocs(q);
+  const q = query(collection(db,"escolas"), orderBy("nomeLower"));
+  const snap = await getDocs(q);
 
   if(schoolCount){
-    schoolCount.textContent=snap.size+" escolas cadastradas";
+    schoolCount.textContent = snap.size + " escolas cadastradas";
   }
 
-  let rows="";
+  let rows = "";
 
   snap.forEach(d=>{
 
@@ -219,32 +231,30 @@ async function loadList(){
 
     rows+=`
     <tr>
-    <td>${escapeHtml(s.nome)}</td>
-    <td><code>${escapeHtml(s.cie)}</code></td>
-    <td>${escapeHtml(s.municipio)}</td>
-    <td>${escapeHtml(s.ure)}</td>
-    <td>
-      <button class="btn" data-edit="${s.cie}">Editar</button>
-      <button class="btn" data-del="${s.cie}">Excluir</button>
-    </td>
+      <td>${escapeHtml(s.nome)}</td>
+      <td><code>${escapeHtml(s.cie)}</code></td>
+      <td>${escapeHtml(s.municipio)}</td>
+      <td>${escapeHtml(s.ure)}</td>
+      <td>
+        <button class="btn" data-edit="${escapeHtml(s.cie)}">Editar</button>
+        <button class="btn" data-del="${escapeHtml(s.cie)}">Excluir</button>
+      </td>
     </tr>
     `;
 
   });
 
-  tbody.innerHTML=rows;
+  if(tbody) tbody.innerHTML = rows;
 
-  tbody.querySelectorAll("[data-edit]").forEach(btn=>{
-
+  /* IMPORTANTÍSSIMO: re-ligar eventos toda vez que renderiza a lista */
+  tbody?.querySelectorAll("[data-edit]").forEach(btn=>{
     btn.addEventListener("click",()=>fillForm(btn.dataset.edit));
-
   });
 
-  tbody.querySelectorAll("[data-del]").forEach(btn=>{
-
+  tbody?.querySelectorAll("[data-del]").forEach(btn=>{
     btn.addEventListener("click",async()=>{
 
-      const cie=btn.dataset.del;
+      const cie = btn.dataset.del;
 
       if(!confirm("Excluir escola "+cie+" ?")) return;
 
@@ -253,7 +263,6 @@ async function loadList(){
       loadList();
 
     });
-
   });
 
 }
@@ -262,16 +271,16 @@ async function loadList(){
 
 async function fillForm(cie){
 
-  const snap=await getDoc(schoolDocRef(cie));
+  const snap = await getDoc(schoolDocRef(cie));
 
   if(!snap.exists()) return;
 
-  const s=snap.data();
+  const s = snap.data();
 
-  cieEl.value=s.cie;
-  nomeEl.value=s.nome;
-  municipioEl.value=s.municipio;
-  ureEl.value=s.ure;
+  if(cieEl) cieEl.value = s.cie || "";
+  if(nomeEl) nomeEl.value = s.nome || "";
+  if(municipioEl) municipioEl.value = s.municipio || "";
+  if(ureEl) ureEl.value = s.ure || "São José do Rio Preto";
 
   window.scrollTo({top:0,behavior:"smooth"});
 
@@ -279,42 +288,44 @@ async function fillForm(cie){
 
 /* ================= BUSCA CIE ================= */
 
-btnSearchCie?.addEventListener("click",async()=>{
+btnSearchCie?.addEventListener("click", async ()=>{
 
-  result.innerHTML="";
+  if(result) result.innerHTML="";
 
-  const cie=onlyDigits(searchCie.value);
+  const cie = onlyDigits(searchCie?.value);
 
   if(!cie) return;
 
-  const snap=await getDoc(schoolDocRef(cie));
+  const snap = await getDoc(schoolDocRef(cie));
 
   if(!snap.exists()){
-    result.innerHTML="Não encontrado";
+    if(result) result.innerHTML="Não encontrado";
     return;
   }
 
-  const s=snap.data();
+  const s = snap.data();
 
-  result.innerHTML=`
-  <strong>${escapeHtml(s.nome)}</strong><br>
-  CIE: ${escapeHtml(s.cie)}<br>
-  Município: ${escapeHtml(s.municipio)}
-  `;
+  if(result){
+    result.innerHTML=`
+      <strong>${escapeHtml(s.nome)}</strong><br>
+      CIE: ${escapeHtml(s.cie)}<br>
+      Município: ${escapeHtml(s.municipio)}
+    `;
+  }
 
 });
 
-/* ================= BUSCA NOME OU MUNICIPIO ================= */
+/* ================= BUSCA NOME OU MUNICÍPIO ================= */
 
-btnSearchNome?.addEventListener("click",async()=>{
+btnSearchNome?.addEventListener("click", async ()=>{
 
-  result.innerHTML="";
+  if(result) result.innerHTML="";
 
-  const term=normalizeName(searchNome.value).toLowerCase();
+  const term = normalizeName(searchNome?.value).toLowerCase();
 
-  if(term.length<2) return;
+  if(term.length < 2) return;
 
-  const snap=await getDocs(collection(db,"escolas"));
+  const snap = await getDocs(collection(db,"escolas"));
 
   let html="";
   let found=0;
@@ -323,17 +334,17 @@ btnSearchNome?.addEventListener("click",async()=>{
 
     const s=d.data();
 
-    if(
-      (s.nome||"").toLowerCase().includes(term) ||
-      (s.municipio||"").toLowerCase().includes(term)
-    ){
+    const nome = (s.nome||"").toLowerCase();
+    const municipio = (s.municipio||"").toLowerCase();
+
+    if(nome.includes(term) || municipio.includes(term)){
 
       html+=`
-      <div>
-      <strong>${escapeHtml(s.nome)}</strong>
-      — ${escapeHtml(s.cie)}
-      — ${escapeHtml(s.municipio)}
-      </div>
+        <div>
+          <strong>${escapeHtml(s.nome)}</strong>
+          — ${escapeHtml(s.cie)}
+          — ${escapeHtml(s.municipio)}
+        </div>
       `;
 
       found++;
@@ -343,33 +354,33 @@ btnSearchNome?.addEventListener("click",async()=>{
   });
 
   if(found===0){
-    result.innerHTML="Nenhum resultado";
+    if(result) result.innerHTML="Nenhum resultado";
     return;
   }
 
-  result.innerHTML=html;
+  if(result) result.innerHTML=html;
 
 });
 
 /* ================= ENTER BUSCA ================= */
 
-searchCie?.addEventListener("keypress",e=>{
-  if(e.key==="Enter") btnSearchCie.click();
+searchCie?.addEventListener("keypress",(e)=>{
+  if(e.key==="Enter") btnSearchCie?.click();
 });
 
-searchNome?.addEventListener("keypress",e=>{
-  if(e.key==="Enter") btnSearchNome.click();
+searchNome?.addEventListener("keypress",(e)=>{
+  if(e.key==="Enter") btnSearchNome?.click();
 });
 
 /* ================= BULK ================= */
 
-btnBulk?.addEventListener("click",async()=>{
+btnBulk?.addEventListener("click", async ()=>{
 
-  const text=(bulk.value||"").trim();
+  const text = (bulk?.value || "").trim();
 
   if(!text) return;
 
-  const lines=text.split("\n");
+  const lines = text.split("\n");
 
   let ok=0;
 
@@ -377,9 +388,9 @@ btnBulk?.addEventListener("click",async()=>{
 
     const parts=line.split(/;|,|\t/).map(p=>p.trim());
 
-    const nome=normalizeName(parts[0]);
-    const cie=onlyDigits(parts[1]);
-    const municipio=normalizeName(parts[2]);
+    const nome = normalizeName(parts[0]);
+    const cie = onlyDigits(parts[1]);
+    const municipio = normalizeName(parts[2]);
 
     if(!nome || !cie) continue;
 
@@ -389,7 +400,8 @@ btnBulk?.addEventListener("click",async()=>{
       nomeLower:nome.toLowerCase(),
       municipio,
       ure:"São José do Rio Preto",
-      updatedAt:Date.now()
+      updatedAt:Date.now(),
+      updatedBy:currentUid()
     },{merge:true});
 
     ok++;
@@ -404,7 +416,7 @@ btnBulk?.addEventListener("click",async()=>{
 
 /* ================= RELOAD ================= */
 
-btnReload?.addEventListener("click",loadList);
+btnReload?.addEventListener("click", loadList);
 
 /* ================= DARK MODE ================= */
 
@@ -422,9 +434,9 @@ toggleDark?.addEventListener("click",()=>{
 
 });
 
-/* ================= TABS ================= */
+/* ================= TABS (Busca: CIE/NOME) ================= */
 
-const tabs=document.querySelectorAll(".tab");
+const tabs = document.querySelectorAll(".tab");
 
 tabs.forEach(tab=>{
 
@@ -444,4 +456,186 @@ tabs.forEach(tab=>{
 
   });
 
+});
+
+/* ================= MENU PRINCIPAL (Sistema / Histórico) ================= */
+
+document.querySelectorAll(".mainTab").forEach(tab=>{
+
+  tab.addEventListener("click",()=>{
+
+    document.querySelectorAll(".mainTab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const page = tab.dataset.page;
+
+    const pageSistema = document.getElementById("page-sistema");
+    const pageHistorico = document.getElementById("page-historico");
+
+    if(pageSistema) pageSistema.style.display = page==="sistema" ? "block" : "none";
+    if(pageHistorico) pageHistorico.style.display = page==="historico" ? "block" : "none";
+
+    if(page==="historico"){
+      loadHistoricoCards();
+    }
+
+  });
+
+});
+
+/* ================= HISTÓRICO DE ATENDIMENTO ================= */
+
+async function loadHistoricoCards(){
+
+  if(!cardsHistorico) return;
+
+  const q = query(collection(db,"escolas"), orderBy("nomeLower"));
+  const snap = await getDocs(q);
+
+  let html="";
+
+  snap.forEach(d=>{
+
+    const s=d.data();
+
+    html+=`
+      <div class="cardSchool" data-cie="${escapeHtml(s.cie)}">
+        <strong>${escapeHtml(s.nome)}</strong><br>
+        CIE: ${escapeHtml(s.cie)}<br>
+        ${escapeHtml(s.municipio)}
+      </div>
+    `;
+
+  });
+
+  cardsHistorico.innerHTML = html;
+
+  document.querySelectorAll(".cardSchool").forEach(card=>{
+    card.addEventListener("click",()=>openHistorico(card.dataset.cie));
+  });
+
+}
+
+async function openHistorico(cie){
+
+  currentCIE = cie;
+
+  if(modalHistorico) modalHistorico.style.display="flex";
+  if(historicoTexto) historicoTexto.value="";
+
+  // título do modal
+  const schoolSnap = await getDoc(schoolDocRef(cie));
+  if(modalSchool){
+    if(schoolSnap.exists()){
+      const s = schoolSnap.data();
+      modalSchool.textContent = `${s.nome} (CIE: ${s.cie})`;
+    }else{
+      modalSchool.textContent = `Escola (CIE: ${cie})`;
+    }
+  }
+
+  // lista de históricos
+  const histCol = collection(db,"escolas",cie,"historico");
+  const histSnap = await getDocs(histCol);
+
+  if(!historicoLista) return;
+
+  if(histSnap.empty){
+    historicoLista.innerHTML = `<div class="msg err">Sem histórico</div>`;
+    return;
+  }
+
+  // ordena no front por dataHora (se existir) ou por data string
+  const items = [];
+  histSnap.forEach(d=>{
+    items.push({ id:d.id, ...d.data() });
+  });
+
+  items.sort((a,b)=> (b.dataHora||0) - (a.dataHora||0));
+
+  let html="";
+  for(const h of items){
+    html += `
+  <div class="histItem" data-id="${h.id}">
+    <div class="histHeader">
+      <strong>${escapeHtml(h.data || "")}</strong>
+      <button class="btnDeleteHist">🗑️</button>
+    </div>
+    ${escapeHtml(h.tecnico || "") ? `<em>${escapeHtml(h.tecnico)}</em><br>` : ``}
+    <div>${escapeHtml(h.texto || "")}</div>
+  </div>
+`;
+  }
+
+  historicoLista.innerHTML = html;
+
+  historicoLista.querySelectorAll(".btnDeleteHist").forEach(btn=>{
+  btn.addEventListener("click", async (e)=>{
+
+    e.stopPropagation();
+
+    const item = btn.closest(".histItem");
+    const id = item.dataset.id;
+
+    if(!confirm("Excluir esta anotação?")) return;
+
+    await deleteDoc(doc(db,"escolas",currentCIE,"historico",id));
+
+    openHistorico(currentCIE); // recarrega
+
+  });
+});
+
+}
+
+if(btnSalvarHistorico){
+
+btnSalvarHistorico.addEventListener("click",async()=>{
+
+if(!currentCIE){
+alert("Erro: escola não selecionada");
+return;
+}
+
+const texto = historicoTexto.value.trim();
+
+if(!texto){
+alert("Digite uma anotação");
+return;
+}
+
+try{
+
+await addDoc(collection(db,"escolas",currentCIE,"historico"),{
+
+texto: texto,
+data: new Date().toLocaleDateString(),
+dataHora: Date.now()
+
+});
+
+historicoTexto.value="";
+
+openHistorico(currentCIE);
+
+}catch(err){
+
+console.error(err);
+alert("Erro ao salvar anotação");
+
+}
+
+});
+
+}
+
+btnFecharModal?.addEventListener("click",()=>{
+  if(modalHistorico) modalHistorico.style.display="none";
+});
+
+// fecha modal clicando no fundo (opcional, não quebra nada)
+modalHistorico?.addEventListener("click",(e)=>{
+  if(e.target === modalHistorico){
+    modalHistorico.style.display="none";
+  }
 });
