@@ -3,21 +3,33 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Sistema de gerenciamento de escolas e CIE da URE São José do Rio Preto"/>
+<meta name="theme-color" content="#1d4ed8"/>
 <title>URE SJR Preto • Escolas x CIE</title>
 
 <link rel="stylesheet" href="styles.css"/>
+<link rel="preconnect" href="https://www.gstatic.com"/>
 
 </head>
 <body>
 
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" class="loginContainer">
-  <form id="loginForm" class="card loginCard">
-    <h2>Acesso Restrito</h2>
-    <input id="loginEmail" type="email" placeholder="Email" required>
-    <input id="loginPassword" type="password" placeholder="Senha" required>
-    <button class="btn primary">Entrar</button>
-    <div id="loginError" class="msg err"></div>
+  <form id="loginForm" class="card loginCard" autocomplete="on">
+    <div class="loginHeader">
+      <h2>Acesso Restrito</h2>
+      <p class="loginSubtitle">Sistema URE São José do Rio Preto</p>
+    </div>
+    <div class="formGroup">
+      <label for="loginEmail" class="visuallyHidden">Email</label>
+      <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required aria-label="Email">
+    </div>
+    <div class="formGroup">
+      <label for="loginPassword" class="visuallyHidden">Senha</label>
+      <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" required aria-label="Senha">
+    </div>
+    <button type="submit" class="btn primary btnLarge">Entrar</button>
+    <div id="loginError" class="msg err" role="alert" aria-live="polite"></div>
   </form>
 </div>
 
@@ -28,15 +40,19 @@
 
 <div class="wrap headerFlex">
 
+<img src="masct_ure.png" class="logoMascot" alt="Mascote URE São José do Rio Preto" loading="lazy">
+
 <h1 class="logoTitle">
-<img src="masct_ure.png" class="logoMascot">
 <span>Consulta de Escolas</span>
 </h1>
 
-<div class="headerBtns">
-<button id="toggleDark" class="btn">🌙</button>
-<button id="logoutBtn" class="btn">Sair</button>
-</div>
+<nav class="headerBtns" aria-label="Menu principal">
+<button id="toggleDark" class="btn btnIcon" aria-label="Alternar modo escuro" title="Alternar modo escuro">
+<span class="iconMoon">🌙</span>
+<span class="iconSun">☀️</span>
+</button>
+<button id="logoutBtn" class="btn btnSecondary" aria-label="Sair do sistema">Sair</button>
+</nav>
 
 </div>
 
@@ -44,121 +60,141 @@
 
 <!-- MENU PRINCIPAL -->
 
-<div class="wrap mainTabs">
+<nav class="wrap mainTabs" role="tablist" aria-label="Navegação entre páginas">
 
-<button class="mainTab active" data-page="sistema">Sistema</button>
-<button class="mainTab" data-page="historico">Histórico de Atendimento</button>
+<button class="mainTab active" data-page="sistema" role="tab" aria-selected="true" aria-controls="page-sistema">
+<span class="tabIcon">📚</span>
+<span>Sistema</span>
+</button>
+<button class="mainTab" data-page="historico" role="tab" aria-selected="false" aria-controls="page-historico">
+<span class="tabIcon">📋</span>
+<span>Histórico de Atendimento</span>
+</button>
 
-</div>
+</nav>
 
 <!-- PÁGINA SISTEMA -->
 
-<div id="page-sistema">
+<div id="page-sistema" role="tabpanel" aria-labelledby="sistema-tab">
 
 <main class="wrap grid">
 
-<section class="card">
+<section class="card cardElevated">
 
-<h2>Cadastrar / Atualizar</h2>
+<h2 class="sectionTitle">
+<span class="titleIcon">✏️</span>
+Cadastrar / Atualizar
+</h2>
 
-<form id="schoolForm" class="form">
+<form id="schoolForm" class="form" novalidate>
 
 <div class="row">
 
-<label>
-CIE (somente números)
-<input id="cie" inputmode="numeric" placeholder="Ex: 123456" required>
+<label class="inputLabel">
+<span class="labelText">CIE (somente números)</span>
+<input id="cie" type="text" inputmode="numeric" placeholder="Ex: 123456" required aria-required="true">
 </label>
 
-<label>
-Nome da escola
-<input id="nome" placeholder="Ex: EE Prof. João da Silva" required>
+<label class="inputLabel">
+<span class="labelText">Nome da escola</span>
+<input id="nome" type="text" placeholder="Ex: EE Prof. João da Silva" required aria-required="true">
 </label>
 
 </div>
 
 <div class="row">
 
-<label>
-URE
-<input id="ure" value="São José do Rio Preto">
+<label class="inputLabel">
+<span class="labelText">URE</span>
+<input id="ure" type="text" value="São José do Rio Preto" aria-label="Unidade Regional de Ensino">
 </label>
 
-<label>
-Município
-<input id="municipio" placeholder="Ex: São José do Rio Preto">
+<label class="inputLabel">
+<span class="labelText">Município</span>
+<input id="municipio" type="text" placeholder="Ex: São José do Rio Preto" aria-label="Município da escola">
 </label>
 
 </div>
 
 <div class="actions">
-<button type="submit" class="btn primary">Salvar</button>
-<button type="button" id="btnClear" class="btn">Limpar</button>
+<button type="submit" class="btn primary btnLarge">💾 Salvar</button>
+<button type="button" id="btnClear" class="btn btnSecondary">🗑️ Limpar</button>
 </div>
 
-<div id="formMsg" class="msg"></div>
+<div id="formMsg" class="msg" role="status" aria-live="polite"></div>
 
 </form>
 
 </section>
 
-<section class="card">
+<section class="card cardElevated">
 
-<h2>Busca</h2>
+<h2 class="sectionTitle">
+<span class="titleIcon">🔍</span>
+Busca
+</h2>
 
-<div class="tabs">
-<button class="tab active" data-tab="cie">Buscar por CIE</button>
-<button class="tab" data-tab="nome">Buscar por Nome</button>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="cie" role="tab" aria-selected="true">🔢 Buscar por CIE</button>
+<button class="tab" data-tab="nome" role="tab" aria-selected="false">🏫 Buscar por Nome</button>
 </div>
 
-<div id="tab-cie" class="tabpanel active">
+<div id="tab-cie" class="tabpanel active" role="tabpanel">
 
-<label>
-Digite o CIE
-<input id="searchCie" inputmode="numeric">
+<label class="inputLabel">
+<span class="labelText">Digite o CIE</span>
+<input id="searchCie" type="text" inputmode="numeric" placeholder="Digite o número do CIE" aria-label="Buscar por CIE">
 </label>
 
-<button id="btnSearchCie" class="btn primary">Buscar</button>
+<button id="btnSearchCie" class="btn primary btnBlock">🔍 Buscar</button>
 
 </div>
 
-<div id="tab-nome" class="tabpanel">
+<div id="tab-nome" class="tabpanel" role="tabpanel">
 
-<label>
-Digite parte do nome ou município
-<input id="searchNome">
+<label class="inputLabel">
+<span class="labelText">Digite parte do nome ou município</span>
+<input id="searchNome" type="text" placeholder="Digite nome ou município" aria-label="Buscar por nome ou município">
 </label>
 
-<button id="btnSearchNome" class="btn primary">Buscar</button>
+<button id="btnSearchNome" class="btn primary btnBlock">🔍 Buscar</button>
 
 </div>
 
-<div id="result" class="result"></div>
+<div id="result" class="result" role="region" aria-live="polite"></div>
 
 </section>
 
-<section class="card full">
+<section class="card cardElevated full">
 
 <div class="listHeader">
 
-<h2>Lista</h2>
-<p id="schoolCount"></p>
+<div class="listHeaderLeft">
+<h2 class="sectionTitle">
+<span class="titleIcon">📋</span>
+Lista de Escolas
+</h2>
+<p id="schoolCount" class="schoolCount"></p>
+</div>
 
-<button id="btnReload" class="btn">Recarregar</button>
+<button id="btnReload" class="btn btnSecondary" aria-label="Recarregar lista de escolas">
+<span class="btnIcon">🔄</span>
+<span>Recarregar</span>
+</button>
 
 </div>
 
 <div class="tableWrap">
 
-<table>
+<table class="modernTable">
 
 <thead>
 <tr>
-<th>Escola</th>
-<th>CIE</th>
-<th>Município</th>
-<th>URE</th>
-<th>Ações</th>
+<th scope="col">Escola</th>
+<th scope="col">CIE</th>
+<th scope="col">Município</th>
+<th scope="col">URE</th>
+<th scope="col">Ações</th>
 </tr>
 </thead>
 
@@ -170,19 +206,25 @@ Digite parte do nome ou município
 
 </section>
 
-<section class="card full">
+<section class="card cardElevated full">
 
-<h2>Importar em massa</h2>
+<h2 class="sectionTitle">
+<span class="titleIcon">📥</span>
+Importar em massa
+</h2>
 
+<div class="bulkInfo">
 <p class="hint">
-NOME DA ESCOLA ; CIE ; MUNICÍPIO
+<strong>Formato:</strong> NOME DA ESCOLA ; CIE ; MUNICÍPIO
 </p>
+<p class="hintExample">Exemplo: EE Maria Silva ; 123456 ; São José do Rio Preto</p>
+</div>
 
-<textarea id="bulk" rows="6"></textarea>
+<textarea id="bulk" rows="6" placeholder="Cole aqui os dados das escolas (uma por linha)" aria-label="Área de importação em massa"></textarea>
 
 <div class="actions">
-<button id="btnBulk" class="btn primary">Importar</button>
-<div id="bulkMsg" class="msg"></div>
+<button id="btnBulk" class="btn primary btnLarge">📥 Importar</button>
+<div id="bulkMsg" class="msg" role="status" aria-live="polite"></div>
 </div>
 
 </section>
@@ -193,13 +235,33 @@ NOME DA ESCOLA ; CIE ; MUNICÍPIO
 
 <!-- PÁGINA HISTÓRICO -->
 
-<div id="page-historico" style="display:none">
+<div id="page-historico" style="display:none" role="tabpanel" aria-labelledby="historico-tab">
 
 <div class="wrap">
 
-<h2>Histórico de Atendimento</h2>
+<h2 class="pageTitle">
+<span class="titleIcon">📋</span>
+Histórico de Atendimento
+</h2>
 
-<div id="cardsHistorico" class="cardsGrid"></div>
+<div class="card cardElevated searchCard">
+  <h3 class="sectionSubtitle">
+    <span class="titleIcon">🔍</span>
+    Buscar escola
+  </h3>
+
+  <div class="searchBox">
+    <input 
+      type="search" 
+      id="searchHistorico" 
+      placeholder="Digite nome, município ou CIE"
+      aria-label="Buscar escola para ver histórico"
+    >
+  </div>
+
+</div>
+
+<div id="cardsHistorico" class="cardsGrid" role="list"></div>
 
 </div>
 
@@ -207,19 +269,23 @@ NOME DA ESCOLA ; CIE ; MUNICÍPIO
 
 <!-- MODAL HISTÓRICO -->
 
-<div id="modalHistorico" class="modal">
+<div id="modalHistorico" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalSchool">
 
 <div class="modalContent">
 
-<h3 id="modalSchool"></h3>
+<div class="modalHeader">
+<h3 id="modalSchool" class="modalTitle"></h3>
+<button id="btnFecharModal" class="btnCloseModal" aria-label="Fechar modal">✕</button>
+</div>
 
-<div id="historicoLista"></div>
+<div id="historicoLista" class="historicoLista"></div>
 
-<textarea id="historicoTexto" placeholder="Descreva o atendimento realizado"></textarea>
+<div class="modalForm">
+<label for="historicoTexto" class="visuallyHidden">Descreva o atendimento realizado</label>
+<textarea id="historicoTexto" placeholder="Descreva o atendimento realizado" aria-label="Nova anotação de atendimento"></textarea>
 
-<button type="button" id="btnSalvarHistorico" class="btn primary">Salvar anotação</button>
-
-<button id="btnFecharModal" class="btn">Fechar</button>
+<button type="button" id="btnSalvarHistorico" class="btn primary btnLarge btnBlock">💾 Salvar anotação</button>
+</div>
 
 </div>
 
