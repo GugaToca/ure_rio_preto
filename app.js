@@ -74,6 +74,8 @@ const bulkMsg = $("bulkMsg");
 
 const toggleDark = $("toggleDark");
 
+const userDisplay = $("userDisplay");
+
 /* histórico (novo) */
 const cardsHistorico = $("cardsHistorico");
 const modalHistorico = $("modalHistorico");
@@ -121,6 +123,17 @@ function currentUid(){
   return auth.currentUser ? auth.currentUser.uid : null;
 }
 
+function getUserFirstName(){
+  const user = auth.currentUser;
+  if(!user || !user.email) return "";
+
+  const email = user.email.toLowerCase();
+  const beforeAt = email.split("@")[0];
+  const firstPart = beforeAt.split(".")[0];
+
+  return firstPart.charAt(0).toUpperCase() + firstPart.slice(1);
+}
+
 /* ================= LOGIN ================= */
 
 loginForm?.addEventListener("submit", async (e)=>{
@@ -153,12 +166,20 @@ onAuthStateChanged(auth, (user)=>{
     if(loginScreen) loginScreen.style.display = "none";
     if(appScreen) appScreen.style.display = "block";
 
+    if(userDisplay){
+      userDisplay.textContent = "👤 " + getUserFirstName();
+    }
+
     loadList();
 
   }else{
 
     if(loginScreen) loginScreen.style.display = "flex";
     if(appScreen) appScreen.style.display = "none";
+
+    if(userDisplay){
+      userDisplay.textContent = "";
+    }
 
   }
 
@@ -651,10 +672,12 @@ if(btnSalvarHistorico){
     try{
 
       await addDoc(collection(db,"escolas",currentCIE,"historico"),{
-        texto: texto,
-        data: new Date().toLocaleDateString(),
-        dataHora: Date.now()
-      });
+  texto: texto,
+  tecnico: getUserFirstName(),
+  email: auth.currentUser.email,
+  data: new Date().toLocaleDateString(),
+  dataHora: Date.now()
+});
 
       historicoTexto.value = "";
 

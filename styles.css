@@ -1020,3 +1020,15 @@ body.dark .modernTable td code {
     border: 1px solid #ccc;
   }
 }
+
+.userDisplay {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  padding: 8px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+}
