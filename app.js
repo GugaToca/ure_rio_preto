@@ -99,6 +99,15 @@ function normalizeName(str){
   return (str || "").toString().trim().replace(/\s+/g," ");
 }
 
+function normalizeSearch(str){
+  return (str || "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .trim();
+}
+
 function setMsg(el,text,type){
   if(!el) return;
   el.className = "msg" + (type ? ` ${type}` : "");
@@ -343,9 +352,11 @@ btnSearchNome?.addEventListener("click", async ()=>{
 
   if(result) result.innerHTML = "";
 
-  const term = normalizeName(searchNome?.value).toLowerCase();
+  const termRaw = normalizeSearch(searchNome?.value);
 
-  if(term.length < 2) return;
+  if(termRaw.length < 2) return;
+
+  const termos = termRaw.split(" ").filter(t => t.length > 0);
 
   const snap = await getDocs(collection(db,"escolas"));
 
@@ -356,10 +367,13 @@ btnSearchNome?.addEventListener("click", async ()=>{
 
     const s = d.data();
 
-    const nome = (s.nome || "").toLowerCase();
-    const municipio = (s.municipio || "").toLowerCase();
+    const nome = normalizeSearch(s.nome);
+    const municipio = normalizeSearch(s.municipio);
+    const combinado = nome + " " + municipio;
 
-    if(nome.includes(term) || municipio.includes(term)){
+    const match = termos.every(t => combinado.includes(t));
+
+    if(match){
 
       html += `
         <div>
